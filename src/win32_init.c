@@ -149,6 +149,8 @@ static GLFWbool loadLibraries(void)
             _glfwPlatformGetModuleSymbol(_glfw.win32.dwmapi.instance, "DwmEnableBlurBehindWindow");
         _glfw.win32.dwmapi.GetColorizationColor = (PFN_DwmGetColorizationColor)
             _glfwPlatformGetModuleSymbol(_glfw.win32.dwmapi.instance, "DwmGetColorizationColor");
+        _glfw.win32.dwmapi.SetWindowAttribute = (PFN_DwmSetWindowAttribute)
+            _glfwPlatformGetModuleSymbol(_glfw.win32.dwmapi.instance, "DwmSetWindowAttribute");
     }
 
     _glfw.win32.shcore.instance = _glfwPlatformLoadModule("shcore.dll");
@@ -165,6 +167,45 @@ static GLFWbool loadLibraries(void)
     {
         _glfw.win32.ntdll.RtlVerifyVersionInfo_ = (PFN_RtlVerifyVersionInfo)
             _glfwPlatformGetModuleSymbol(_glfw.win32.ntdll.instance, "RtlVerifyVersionInfo");
+    }
+
+    _glfw.win32.imm32.instance = _glfwPlatformLoadModule("imm32.dll");
+    if (_glfw.win32.imm32.instance)
+    {
+        _glfw.win32.imm32.ImmGetCandidateListW_ = (PFN_ImmGetCandidateListW)
+            _glfwPlatformGetModuleSymbol(_glfw.win32.imm32.instance, "ImmGetCandidateListW");
+        _glfw.win32.imm32.ImmGetCompositionStringW_ = (PFN_ImmGetCompositionStringW)
+            _glfwPlatformGetModuleSymbol(_glfw.win32.imm32.instance, "ImmGetCompositionStringW");
+        _glfw.win32.imm32.ImmGetContext_ = (PFN_ImmGetContext)
+            _glfwPlatformGetModuleSymbol(_glfw.win32.imm32.instance, "ImmGetContext");
+        _glfw.win32.imm32.ImmGetConversionStatus_ = (PFN_ImmGetConversionStatus)
+            _glfwPlatformGetModuleSymbol(_glfw.win32.imm32.instance, "ImmGetConversionStatus");
+        _glfw.win32.imm32.ImmGetDescriptionW_ = (PFN_ImmGetDescriptionW)
+            _glfwPlatformGetModuleSymbol(_glfw.win32.imm32.instance, "ImmGetDescriptionW");
+        _glfw.win32.imm32.ImmGetOpenStatus_ = (PFN_ImmGetOpenStatus)
+            _glfwPlatformGetModuleSymbol(_glfw.win32.imm32.instance, "ImmGetOpenStatus");
+        _glfw.win32.imm32.ImmNotifyIME_ = (PFN_ImmNotifyIME)
+            _glfwPlatformGetModuleSymbol(_glfw.win32.imm32.instance, "ImmNotifyIME");
+        _glfw.win32.imm32.ImmReleaseContext_ = (PFN_ImmReleaseContext)
+            _glfwPlatformGetModuleSymbol(_glfw.win32.imm32.instance, "ImmReleaseContext");
+        _glfw.win32.imm32.ImmSetCompositionWindow_ = (PFN_ImmSetCompositionWindow)
+            _glfwPlatformGetModuleSymbol(_glfw.win32.imm32.instance, "ImmSetCompositionWindow");
+        _glfw.win32.imm32.ImmSetCandidateWindow_ = (PFN_ImmSetCandidateWindow)
+            _glfwPlatformGetModuleSymbol(_glfw.win32.imm32.instance, "ImmSetCandidateWindow");
+        _glfw.win32.imm32.ImmSetOpenStatus_ = (PFN_ImmSetOpenStatus)
+            _glfwPlatformGetModuleSymbol(_glfw.win32.imm32.instance, "ImmSetOpenStatus");
+    }
+
+    _glfw.win32.uxtheme.instance = _glfwPlatformLoadModule("uxtheme.dll");
+    if (_glfw.win32.uxtheme.instance)
+    {
+        _glfw.win32.uxtheme.ShouldAppsUseDarkMode = (ShouldAppsUseDarkModePtr)_glfwPlatformGetModuleSymbol(_glfw.win32.uxtheme.instance, MAKEINTRESOURCEA(132));
+        _glfw.win32.uxtheme.GetImmersiveColorFromColorSetEx = (GetImmersiveColorFromColorSetExPtr)_glfwPlatformGetModuleSymbol(_glfw.win32.uxtheme.instance, MAKEINTRESOURCEA(95));
+        _glfw.win32.uxtheme.GetImmersiveColorTypeFromName = (GetImmersiveColorTypeFromNamePtr)_glfwPlatformGetModuleSymbol(_glfw.win32.uxtheme.instance, MAKEINTRESOURCEA(96));
+        _glfw.win32.uxtheme.GetImmersiveUserColorSetPreference = (GetImmersiveUserColorSetPreferencePtr)_glfwPlatformGetModuleSymbol(_glfw.win32.uxtheme.instance, MAKEINTRESOURCEA(98));
+
+        _glfw.win32.uxtheme.uxThemeAvailable = _glfw.win32.uxtheme.ShouldAppsUseDarkMode && _glfw.win32.uxtheme.GetImmersiveColorFromColorSetEx && _glfw.win32.uxtheme.GetImmersiveColorTypeFromName && _glfw.win32.uxtheme.GetImmersiveUserColorSetPreference;
+        _glfw.win32.uxtheme.darkTitleAvailable = _glfwIsWindows10BuildOrGreaterWin32(22000);
     }
 
     return GLFW_TRUE;
@@ -191,6 +232,12 @@ static void freeLibraries(void)
 
     if (_glfw.win32.ntdll.instance)
         _glfwPlatformFreeModule(_glfw.win32.ntdll.instance);
+
+    if (_glfw.win32.imm32.instance)
+        _glfwPlatformFreeModule(_glfw.win32.imm32.instance);
+
+    if (_glfw.win32.uxtheme.instance)
+        _glfwPlatformFreeModule(_glfw.win32.uxtheme.instance);
 }
 
 // Create key code translation tables
@@ -728,4 +775,3 @@ void _glfwTerminateWin32(void)
 }
 
 #endif // _GLFW_WIN32
-
