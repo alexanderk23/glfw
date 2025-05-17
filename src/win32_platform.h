@@ -511,21 +511,6 @@ typedef struct _GLFWlibraryWin32
     } ntdll;
 
     struct {
-        HINSTANCE                       instance;
-        PFN_ImmGetCandidateListW        ImmGetCandidateListW_;
-        PFN_ImmGetCompositionStringW    ImmGetCompositionStringW_;
-        PFN_ImmGetContext               ImmGetContext_;
-        PFN_ImmGetConversionStatus      ImmGetConversionStatus_;
-        PFN_ImmGetDescriptionW          ImmGetDescriptionW_;
-        PFN_ImmGetOpenStatus            ImmGetOpenStatus_;
-        PFN_ImmNotifyIME                ImmNotifyIME_;
-        PFN_ImmReleaseContext           ImmReleaseContext_;
-        PFN_ImmSetCompositionWindow     ImmSetCompositionWindow_;
-        PFN_ImmSetCandidateWindow       ImmSetCandidateWindow_;
-        PFN_ImmSetOpenStatus            ImmSetOpenStatus_;
-    } imm32;
-
-    struct {
         HINSTANCE                              instance;
         GLFWbool                               uxThemeAvailable;
         GLFWbool                               darkTitleAvailable;
