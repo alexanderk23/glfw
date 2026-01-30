@@ -178,7 +178,7 @@ static GLFWbool loadLibraries(void)
         _glfw.win32.uxtheme.GetImmersiveUserColorSetPreference = (GetImmersiveUserColorSetPreferencePtr)_glfwPlatformGetModuleSymbol(_glfw.win32.uxtheme.instance, MAKEINTRESOURCEA(98));
 
         _glfw.win32.uxtheme.uxThemeAvailable = _glfw.win32.uxtheme.ShouldAppsUseDarkMode && _glfw.win32.uxtheme.GetImmersiveColorFromColorSetEx && _glfw.win32.uxtheme.GetImmersiveColorTypeFromName && _glfw.win32.uxtheme.GetImmersiveUserColorSetPreference;
-        _glfw.win32.uxtheme.darkTitleAvailable = _glfwIsWindows10BuildOrGreaterWin32(22000);
+        _glfw.win32.uxtheme.darkTitleAvailable = _glfwIsWindows10BuildOrGreaterWin32(19041);
     }
 
     return GLFW_TRUE;
