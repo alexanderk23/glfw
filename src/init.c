@@ -56,7 +56,8 @@ static _GLFWinitconfig _glfwInitHints =
     .ns =
     {
         .menubar = GLFW_TRUE,
-        .chdir = GLFW_TRUE
+        .chdir = GLFW_TRUE,
+        .timer = GLFW_FALSE,
     },
     .x11 =
     {
@@ -459,6 +460,9 @@ GLFWAPI void glfwInitHint(int hint, int value)
             return;
         case GLFW_COCOA_MENUBAR:
             _glfwInitHints.ns.menubar = value;
+            return;
+        case GLFW_COCOA_REFRESH_TIMER:
+            _glfwInitHints.ns.timer = value;
             return;
         case GLFW_X11_XCB_VULKAN_SURFACE:
             _glfwInitHints.x11.xcbVulkanSurface = value;

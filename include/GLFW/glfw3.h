@@ -1318,6 +1318,11 @@ extern "C" {
  *  macOS specific [init hint](@ref GLFW_COCOA_MENUBAR_hint).
  */
 #define GLFW_COCOA_MENUBAR          0x00051002
+/*! @brief macOS specific init hint.
+ *
+ *  macOS specific [init hint](@ref GLFW_COCOA_REFRESH_TIMER_hint).
+ */
+#define GLFW_COCOA_REFRESH_TIMER    0x00051003
 /*! @brief X11 specific init hint.
  *
  *  X11 specific [init hint](@ref GLFW_X11_XCB_VULKAN_SURFACE_hint).

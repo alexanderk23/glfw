@@ -875,6 +875,21 @@ static GLFWbool createNativeWindow(_GLFWwindow* window,
     window->ns.view = [[GLFWContentView alloc] initWithGlfwWindow:window];
     window->ns.scaleFramebuffer = wndconfig->scaleFramebuffer;
 
+    if (_glfw.hints.init.ns.timer) {
+        // Enable animations during resize (when user set up a refresh callback).
+        // Based on https://developer.apple.com/library/archive/qa/qa1385/_index.html
+        // https://github.com/kovidgoyal/kitty/issues/6341#issuecomment-1578348104
+        [[NSRunLoop currentRunLoop]
+            addTimer:
+                [NSTimer
+                    timerWithTimeInterval:0.01
+                    target:window->ns.view
+                    selector:@selector(setNeedsDisplay:)
+                    userInfo:@YES
+                    repeats:YES]
+            forMode:NSEventTrackingRunLoopMode];
+    }
+
     if (fbconfig->transparent)
     {
         [window->ns.object setOpaque:NO];
