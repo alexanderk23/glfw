@@ -381,6 +381,7 @@ struct _GLFWinitconfig
     struct {
         GLFWbool  menubar;
         GLFWbool  chdir;
+        GLFWbool  timer;
     } ns;
     struct {
         GLFWbool  xcbVulkanSurface;
