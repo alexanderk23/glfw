@@ -467,9 +467,6 @@ void _glfwGetMonitorPosCocoa(_GLFWmonitor* monitor, int* xpos, int* ypos)
 // FIXME: It appears that the pointer to NSScreen obtained inside the DidChangeScreenParameters
 //        event handler somehow becomes invalid later.
 void updateMonitorNSScreen(_GLFWmonitor* monitor) {
-    if (!monitor || monitor->ns.screen)
-        return;
-
     @autoreleasepool {
 
     const uint32_t unitNumber = CGDisplayUnitNumber(monitor->ns.displayID);
