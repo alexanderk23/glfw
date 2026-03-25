@@ -322,15 +322,17 @@ void _glfwPollMonitorsCocoa(void)
         const uint32_t unitNumber = CGDisplayUnitNumber(displays[i]);
         NSScreen* screen = nil;
 
-        for (screen in [NSScreen screens])
+        for (NSScreen* s in [NSScreen screens])
         {
-            NSNumber* screenNumber = [screen deviceDescription][@"NSScreenNumber"];
+            NSNumber* screenNumber = [s deviceDescription][@"NSScreenNumber"];
 
             // HACK: Compare unit numbers instead of display IDs to work around
             //       display replacement on machines with automatic graphics
             //       switching
-            if (CGDisplayUnitNumber([screenNumber unsignedIntValue]) == unitNumber)
+            if (CGDisplayUnitNumber([screenNumber unsignedIntValue]) == unitNumber) {
+                screen = s;
                 break;
+            }
         }
 
         // HACK: Compare unit numbers instead of display IDs to work around
@@ -341,7 +343,7 @@ void _glfwPollMonitorsCocoa(void)
         {
             if (disconnected[j] && disconnected[j]->ns.unitNumber == unitNumber)
             {
-                disconnected[j]->ns.screen = screen;
+                // disconnected[j]->ns.screen = screen;
                 disconnected[j] = NULL;
                 break;
             }
@@ -358,7 +360,7 @@ void _glfwPollMonitorsCocoa(void)
         _GLFWmonitor* monitor = _glfwAllocMonitor(name, size.width, size.height);
         monitor->ns.displayID  = displays[i];
         monitor->ns.unitNumber = unitNumber;
-        monitor->ns.screen     = screen;
+        monitor->ns.screen     = nil; // screen;
 
         _glfw_free(name);
 
@@ -462,10 +464,34 @@ void _glfwGetMonitorPosCocoa(_GLFWmonitor* monitor, int* xpos, int* ypos)
     } // autoreleasepool
 }
 
+// FIXME: It appears that the pointer to NSScreen obtained inside the DidChangeScreenParameters
+//        event handler somehow becomes invalid later.
+void updateMonitorNSScreen(_GLFWmonitor* monitor) {
+    if (!monitor || monitor->ns.screen)
+        return;
+
+    @autoreleasepool {
+
+    const uint32_t unitNumber = CGDisplayUnitNumber(monitor->ns.displayID);
+    for (NSScreen* screen in [NSScreen screens])
+    {
+        NSNumber* screenNumber = [screen deviceDescription][@"NSScreenNumber"];
+        if (CGDisplayUnitNumber([screenNumber unsignedIntValue]) == unitNumber)
+        {
+            monitor->ns.screen = screen;
+            return;
+        }
+    }
+
+    } // autoreleasepool
+}
+
 void _glfwGetMonitorContentScaleCocoa(_GLFWmonitor* monitor,
                                       float* xscale, float* yscale)
 {
     @autoreleasepool {
+
+    updateMonitorNSScreen(monitor);
 
     if (!monitor->ns.screen)
     {
@@ -489,6 +515,8 @@ void _glfwGetMonitorWorkareaCocoa(_GLFWmonitor* monitor,
                                   int* width, int* height)
 {
     @autoreleasepool {
+
+    updateMonitorNSScreen(monitor);
 
     if (!monitor->ns.screen)
     {
